@@ -46,11 +46,13 @@ export default {
   async created() {
     const res = await fetch(`https://jsonplaceholder.typicode.com/comments`);
     this.rows = await res.json();
+    this.sortedRows = this.rows;
     this.getPage(1);
   },
   data() {
     return {
       rows: [],
+      sortedRows: [],
       currentRows: [],
       currentPage: 1,
       isFetchData: false
@@ -64,14 +66,14 @@ export default {
       }
       res = orderBy(this.rows, [sortProp], [sortDirection]);
       if(filterText) {
-        res = res.filter(row => row[filterProp].search(filterText) > -1)
+        res = res.filter(row => row[filterProp].toString().toLowerCase().search(filterText) > -1)
       }
-      this.rows = res;
+      this.sortedRows = res;
       this.getPage(1);
       return;
     },
     getPage(number, offset = 5) {
-      this.currentRows = this.rows.slice((number * offset) - offset, (number * offset));
+      this.currentRows = this.sortedRows.slice((number * offset) - offset, (number * offset));
       this.currentPage = number;
     },
     async infGetPage() {
@@ -79,9 +81,10 @@ export default {
       if(!this.isFetchData) {
         const res = await fetch(`https://jsonplaceholder.typicode.com/comments`);
         this.rows = await res.json();
+        this.sortedRows = this.rows;
         this.isFetchData = true;
       }
-      const newRows = this.rows.slice(((this.currentPage + 1) * 5) - 5, ((this.currentPage + 1) * 5));
+      const newRows = this.sortedRows.slice(((this.currentPage + 1) * 5) - 5, ((this.currentPage + 1) * 5));
       this.currentRows = [...this.currentRows, ...newRows];
       this.currentPage++;
     }

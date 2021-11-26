@@ -7,7 +7,7 @@ const SETTINGS_DEFAULT = {
   detectHalf: false,
   emitInvisible: false,
 
-  top: '0px',
+  top: '-250px',
   left: '0px',
   bottom: '0px',
   right: '0px'
