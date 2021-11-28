@@ -4,15 +4,15 @@
     :total-pages="100"
     :current-page="currentPage"
     :sortRows="sortRows"
-    :static-paging="true"
-    @getPage="getPage"
+    :static-paging="isStaticPaging" 
+    @getPage="infGetPage"
   >
     <!-- статичная пагинация
-    :static-paging="true"
+    isStaticPaging="true"
     @getPage="getPage"
 
     бесконечная пагинация
-    :static-paging="false" 
+    isStaticPaging="false" 
     @getPage="infGetPage" -->
   
     <oz-table-column prop="id" title="ID" />
@@ -55,7 +55,8 @@ export default {
       sortedRows: [],
       currentRows: [],
       currentPage: 1,
-      isFetchData: false
+      isStaticPaging: false,
+      isFetchData: false,
     };
   },
   methods: {
@@ -72,11 +73,14 @@ export default {
       this.getPage(1);
       return;
     },
-    getPage(number, offset = 5) {
+    getPage(number) {
+      let offset = 5;
+      if(!this.isStaticPaging) offset = 10;
       this.currentRows = this.sortedRows.slice((number * offset) - offset, (number * offset));
       this.currentPage = number;
     },
     async infGetPage() {
+      const offset = 10;
       this.blockingPromise && await this.blockingPromise;
       if(!this.isFetchData) {
         const res = await fetch(`https://jsonplaceholder.typicode.com/comments`);
@@ -84,7 +88,7 @@ export default {
         this.sortedRows = this.rows;
         this.isFetchData = true;
       }
-      const newRows = this.sortedRows.slice(((this.currentPage + 1) * 5) - 5, ((this.currentPage + 1) * 5));
+      const newRows = this.sortedRows.slice(((this.currentPage + 1) * offset) - offset, ((this.currentPage + 1) * offset));
       this.currentRows = [...this.currentRows, ...newRows];
       this.currentPage++;
     }
