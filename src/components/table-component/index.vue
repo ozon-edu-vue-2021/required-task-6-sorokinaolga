@@ -5,7 +5,7 @@
     :current-page="currentPage"
     :sortRows="sortRows"
     :static-paging="isStaticPaging" 
-    @getPage="infGetPage"
+    @getPage="getPage"
   >
     <!-- статичная пагинация
     isStaticPaging="true"
@@ -55,7 +55,7 @@ export default {
       sortedRows: [],
       currentRows: [],
       currentPage: 1,
-      isStaticPaging: false,
+      isStaticPaging: true,
       isFetchData: false,
     };
   },
@@ -71,7 +71,6 @@ export default {
       }
       this.sortedRows = res;
       this.getPage(1);
-      return;
     },
     getPage(number) {
       let offset = 5;

@@ -43,7 +43,6 @@ export default {
     },
     openFilterTooltip(prop = '') {
       this.filterProp = prop;
-      this.filterText = '';
     },
     setFilterText(e) {
       this.filterText = e.target.value;
