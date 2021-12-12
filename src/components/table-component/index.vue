@@ -1,7 +1,7 @@
 <template>
   <oz-table
     :rows="currentRows"
-    :total-pages="100"
+    :total-pages="numberOfPages"
     :current-page="currentPage"
     :sortRows="sortRows"
     :static-paging="isStaticPaging" 
@@ -55,9 +55,15 @@ export default {
       sortedRows: [],
       currentRows: [],
       currentPage: 1,
+      offset: 5,
       isStaticPaging: true,
       isFetchData: false,
     };
+  },
+  computed: {
+    numberOfPages() {
+      return Math.ceil(this.sortedRows.length / this.offset);
+    }
   },
   methods: {
     sortRows(sortProp, sortDirection, filterText, filterProp) {
@@ -73,13 +79,12 @@ export default {
       this.getPage(1);
     },
     getPage(number) {
-      let offset = 5;
-      if(!this.isStaticPaging) offset = 10;
-      this.currentRows = this.sortedRows.slice((number * offset) - offset, (number * offset));
+      if(!this.isStaticPaging) this.offset = 10;
+      this.currentRows = this.sortedRows.slice((number * this.offset) - this.offset, (number * this.offset));
       this.currentPage = number;
     },
     async infGetPage() {
-      const offset = 10;
+      this.offset = 10;
       this.blockingPromise && await this.blockingPromise;
       if(!this.isFetchData) {
         const res = await fetch(`https://jsonplaceholder.typicode.com/comments`);
@@ -87,7 +92,7 @@ export default {
         this.sortedRows = this.rows;
         this.isFetchData = true;
       }
-      const newRows = this.sortedRows.slice(((this.currentPage + 1) * offset) - offset, ((this.currentPage + 1) * offset));
+      const newRows = this.sortedRows.slice(((this.currentPage + 1) * this.offset) - this.offset, ((this.currentPage + 1) * this.offset));
       this.currentRows = [...this.currentRows, ...newRows];
       this.currentPage++;
     }

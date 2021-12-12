@@ -17,7 +17,7 @@ export default {
 
       if (currentPage <= 3) {
         if (totalPages < 5) {
-          return Array(totalPages).fill(null).map(index => index + 1);
+          return Array(totalPages).fill(null).map((elem, index) => elem = index + 1);
         }
 
         return [1, 2, 3, 4, 5];
